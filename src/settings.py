@@ -1,0 +1,5 @@
+MONGO_HOST = "localhost"
+MONGO_PORT = 27017
+MONGO_DB = "my_db"
+MONGO_COLL = "movies"
+MONGO_BULK_SIZE = 100
