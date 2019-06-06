@@ -3,8 +3,8 @@ from pymongo import MongoClient, InsertOne
 import settings
 
 
-client = MongoClient(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
-coll = client[settings.MONGO_DB][settings.MONGO_COLL]
+client = MongoClient(host=settings.MONGODB_HOST, port=settings.MONGODB_PORT)
+coll = client[settings.MONGODB_DB][settings.MONGODB_COLL]
 
 
 def search(api_key: str, search: str, media_type: str) -> Generator[dict, None, None]:
@@ -38,7 +38,7 @@ def save_to_db(hits: Iterable[dict]) -> int:
     reqs = []
     for hit in hits:
         reqs.append(InsertOne(hit))
-        if len(reqs) > settings.MONGO_BULK_SIZE - 1:
+        if len(reqs) > settings.MONGODB_BULK_SIZE - 1:
             res = coll.bulk_write(reqs)
             counter += res.inserted_count
     if len(reqs):
