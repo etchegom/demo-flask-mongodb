@@ -1,7 +1,8 @@
 from typing import Generator, Iterable
-from pymongo import MongoClient, InsertOne
-import settings
 
+from pymongo import InsertOne, MongoClient
+
+import settings
 
 client = MongoClient(host=settings.MONGODB_HOST, port=settings.MONGODB_PORT)
 coll = client[settings.MONGODB_DB][settings.MONGODB_COLL]
