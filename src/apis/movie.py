@@ -3,16 +3,12 @@ from models import MovieDocument
 
 api = Namespace("movies", description="Movies API")
 
-# movie_schema = api.schema_model(
-#     "Movie",
-#     schema={"type": "object", "required": ["title"], "properties": {"title": "string"}},
-# )
 
 movie_model = api.model("Movie", {"title": fields.String})
 
 
 @api.route("/")
 class MovieList(Resource):
-    @api.marshal_with(movie_model, as_list=True, envelope='data')
+    @api.marshal_with(movie_model, as_list=True, envelope="data")
     def get(self):
         return MovieDocument.objects.only("title").paginate(page=1, per_page=2).items
