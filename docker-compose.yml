@@ -15,5 +15,17 @@ services:
     ports:
       - 8081:8081
 
+  app:
+    build: .
+    restart: unless-stopped
+    command: run
+    environment:
+        MONGODB_HOST: mongo
+        WAIT_HOSTS: mongo:27017
+    ports:
+      - 80:5000
+    depends_on:
+      - mongo
+
 volumes:
   mongo-data:
