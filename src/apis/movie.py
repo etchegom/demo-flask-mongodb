@@ -1,10 +1,11 @@
 from flask_restplus import Namespace, Resource, fields
+
 from models import MovieDocument
 
 api = Namespace("movies", description="Movies API")
 
 
-movie_model = api.model("Movie", {"title": fields.String})
+movie_model = api.model("Movie", model={"title": fields.String})
 
 
 @api.route("/")
