@@ -1,7 +1,7 @@
 from flask import Flask
 
 from apis import bp_api
-from db_engine import db
+from models import db
 
 
 def create_app() -> Flask:
