@@ -1,6 +1,6 @@
 from flask import Flask
 
-from apis import bp_api
+from apis import blueprint
 from models import db
 
 
@@ -10,7 +10,7 @@ def create_app() -> Flask:
 
     db.init_app(app)
 
-    app.register_blueprint(bp_api)
+    app.register_blueprint(blueprint)
     return app
 
 
