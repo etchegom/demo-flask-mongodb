@@ -1,5 +1,6 @@
 from typing import Generator, Iterable
 
+from omdb_fixtures_loader import loader
 from pymongo import InsertOne, MongoClient
 
 import settings
@@ -8,7 +9,9 @@ client = MongoClient(host=settings.MONGODB_HOST, port=settings.MONGODB_PORT)
 coll = client[settings.MONGODB_DB][settings.MONGODB_COLL]
 
 
-def search(api_key: str, search: str, media_type: str) -> Generator[dict, None, None]:
+def do_search(
+    api_key: str, search: str, media_type: str
+) -> Generator[dict, None, None]:
     """Perform a search on OMDB API
 
     Arguments:
@@ -20,7 +23,7 @@ def search(api_key: str, search: str, media_type: str) -> Generator[dict, None, 
         Generator[dict, None, None] -- the search hits
     """
     for hit in loader.search_and_fetch(
-        api_key=args.api_key, search=args.search, media_type=args.media_type
+        api_key=api_key, search=search, media_type=media_type
     ):
         yield hit
 
@@ -49,35 +52,11 @@ def save_to_db(hits: Iterable[dict]) -> int:
     return counter
 
 
-if __name__ == "__main__":
-    import argparse
-    from omdb_fixtures_loader import loader
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--apikey", dest="api_key", required=True, help="Your OMDB API key"
-    )
-    parser.add_argument(
-        "--search", dest="search", required=True, help="The text to search"
-    )
-    parser.add_argument(
-        "--type", dest="media_type", required=False, help="Type of media"
-    )
-    parser.add_argument(
-        "--reset",
-        dest="reset",
-        required=False,
-        action="store_true",
-        help="Reset database before pushing data",
-    )
-    args = parser.parse_args()
-
-    if args.reset:
+def do_work(api_key: str, search: str, media_type: str, reset: bool) -> None:
+    if reset:
         coll.drop()
 
     count = save_to_db(
-        hits=search(
-            api_key=args.api_key, search=args.search, media_type=args.media_type
-        )
+        hits=do_search(api_key=api_key, search=search, media_type=media_type)
     )
     print("{} items saved to database".format(count))
