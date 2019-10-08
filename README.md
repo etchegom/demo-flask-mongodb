@@ -20,5 +20,5 @@ docker-compose run --rm app flask routes
 
 - Get a list of movies using [httpie](https://httpie.org/) for instance
 ```
-http --follow http://localhost:5000/api/movies/
+http "http://localhost:5000/api/movies/?page=1&size=5"
 ```

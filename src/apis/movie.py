@@ -1,5 +1,6 @@
 from typing import List
 
+from flask_paginate import get_page_args
 from flask_restplus import Namespace, Resource, fields
 
 from models import MovieDocument
@@ -14,4 +15,11 @@ movie_model = api.model("Movie", model={"title": fields.String})
 class MovieList(Resource):
     @api.marshal_with(movie_model, as_list=True, envelope="data")
     def get(self) -> List[object]:
-        return MovieDocument.objects.only("title").paginate(page=1, per_page=2).items
+        page, per_page, _ = get_page_args(
+            page_parameter="page", per_page_parameter="size"
+        )
+        return (
+            MovieDocument.objects.only("title")
+            .paginate(page=page, per_page=per_page)
+            .items
+        )
