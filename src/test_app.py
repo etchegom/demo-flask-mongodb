@@ -3,7 +3,13 @@ from app import create_app
 
 
 @pytest.fixture
-def app():
+def client():
     app = create_app()
     app.debug = True
-    return app.test_client()
+    app.config["TESTING"] = True
+    yield app.test_client()
+
+
+def test_dummy(client):
+    resp = client.get("/dummy")
+    assert resp.status_code == 404
