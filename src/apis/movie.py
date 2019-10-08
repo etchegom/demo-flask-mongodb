@@ -1,3 +1,5 @@
+from typing import List
+
 from flask_restplus import Namespace, Resource, fields
 
 from models import MovieDocument
@@ -11,5 +13,5 @@ movie_model = api.model("Movie", model={"title": fields.String})
 @api.route("/")
 class MovieList(Resource):
     @api.marshal_with(movie_model, as_list=True, envelope="data")
-    def get(self):
+    def get(self) -> List[object]:
         return MovieDocument.objects.only("title").paginate(page=1, per_page=2).items
