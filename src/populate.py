@@ -53,7 +53,19 @@ def save_to_db(hits: Iterable[dict]) -> int:
 
 
 def do_work(api_key: str, search: str, media_type: str, reset: bool) -> None:
+    """[summary]
+
+    Arguments:
+        api_key {str} -- API key
+        search {str} -- the text to search
+        media_type {str} -- type of media
+        reset {bool} -- reset database before populate (drop mongodb collection)
+
+    Returns:
+        None -- [description]
+    """
     if reset:
+        print("dropping collection {}".format(coll.name))
         coll.drop()
 
     count = save_to_db(
