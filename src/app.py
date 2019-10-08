@@ -2,13 +2,13 @@ import click
 from flask import Flask
 
 import populate
-from apis import bp_api
+from apis import blueprint
 from models import db
 
 app = Flask(__name__)
 app.config.from_object("settings")
 db.init_app(app)
-app.register_blueprint(bp_api)
+app.register_blueprint(blueprint)
 
 
 @app.cli.command("populate")
