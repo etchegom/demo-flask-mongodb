@@ -11,8 +11,19 @@ api = Namespace("movies", description="Movies API")
 movie_model = api.model("Movie", model={"title": fields.String})
 
 
-@api.route("/")
+@api.route(
+    "/",
+    endpoint="movie-list",
+    doc={
+        "params": {
+            "page": "Starting page number, for pagination.",
+            "size": "Number of results per page, for pagination.",
+        }
+    },
+)
 class MovieList(Resource):
+    @api.response(200, 'Success', movie_model)
+    @api.response(400, 'Validation Error')
     @api.marshal_with(movie_model, as_list=True, envelope="data")
     def get(self) -> List[object]:
         page, per_page, _ = get_page_args(
