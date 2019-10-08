@@ -1,8 +1,8 @@
 from typing import List
 
-from flask_paginate import get_page_args
 from flask_restplus import Namespace, Resource, fields
 
+from flask_paginate import get_page_args
 from models import MovieDocument
 
 api = Namespace("movies", description="Movies API")
@@ -22,8 +22,8 @@ movie_model = api.model("Movie", model={"title": fields.String})
     },
 )
 class MovieList(Resource):
-    @api.response(200, 'Success', movie_model)
-    @api.response(400, 'Validation Error')
+    @api.response(200, "Success", movie_model)
+    @api.response(400, "Validation Error")
     @api.marshal_with(movie_model, as_list=True, envelope="data")
     def get(self) -> List[object]:
         page, per_page, _ = get_page_args(
