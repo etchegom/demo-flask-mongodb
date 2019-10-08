@@ -1,8 +1,8 @@
 from typing import List
 
+from flask_paginate import get_page_args
 from flask_restplus import Namespace, Resource, fields
 
-from flask_paginate import get_page_args
 from models import MovieDocument
 
 api = Namespace("movies", description="Movies API")
