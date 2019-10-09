@@ -30,7 +30,8 @@ class MovieList(Resource):
             page_parameter="page", per_page_parameter="size"
         )
         return (
-            MovieDocument.objects.only("title")
+            MovieDocument.objects.order_by("title")
+            .only("title")
             .paginate(page=page, per_page=per_page)
             .items
         )

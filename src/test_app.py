@@ -10,8 +10,14 @@ def client():
     app = create_app(MONGODB_SETTINGS={"DB": "test"}, TESTING=True)
     app.debug = True
     assert app.config["TESTING"]
-    assert mongoengine.connection.get_db().name == "test"
+
+    db = mongoengine.connection.get_db()
+    assert db.name == "test"
+
     yield app.test_client()
+
+    conn = mongoengine.connection.get_connection()
+    conn.drop_database("test")
 
 
 class MovieDocumentFactory(factory.mongoengine.MongoEngineFactory):
