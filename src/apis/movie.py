@@ -22,15 +22,16 @@ movie_model = api.model("Movie", model={"title": fields.String})
     },
 )
 class MovieList(Resource):
-    @api.response(200, 'Success', movie_model)
-    @api.response(400, 'Validation Error')
+    @api.response(200, "Success", movie_model)
+    @api.response(400, "Validation Error")
     @api.marshal_with(movie_model, as_list=True, envelope="data")
     def get(self) -> List[object]:
         page, per_page, _ = get_page_args(
             page_parameter="page", per_page_parameter="size"
         )
         return (
-            MovieDocument.objects.only("title")
+            MovieDocument.objects.order_by("title")
+            .only("title")
             .paginate(page=page, per_page=per_page)
             .items
         )
