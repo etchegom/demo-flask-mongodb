@@ -1,3 +1,4 @@
+from commands import user_cli
 from typing import Generator, Iterable
 
 import click
@@ -53,6 +54,7 @@ def save_to_db(hits: Iterable[dict]) -> int:
     return counter
 
 
+@user_cli.command("populate")
 @click.option(
     "-k", "--apikey", "api_key", required=True, prompt=True, help="OMDB api key"
 )
@@ -72,7 +74,7 @@ def save_to_db(hits: Iterable[dict]) -> int:
     help="Type of media to search",
 )
 @click.option("-r", "--reset", is_flag=True, help="Reset database before populating")
-def command(api_key: str, search: str, media_type: str, reset: bool) -> None:
+def populate(api_key: str, search: str, media_type: str, reset: bool) -> None:
     """Populate database with data fetched from the OMDB API
 
     Arguments:

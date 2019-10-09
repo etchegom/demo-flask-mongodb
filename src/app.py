@@ -1,8 +1,10 @@
+from commands import user_cli
+
 from flask import Flask
+from flask_debugtoolbar import DebugToolbarExtension
 
 from apis import blueprint
 from models import db
-from populate import command as populate_command
 
 
 def create_app(with_commands: bool = False, **config_overrides: dict) -> Flask:
@@ -20,7 +22,12 @@ def create_app(with_commands: bool = False, **config_overrides: dict) -> Flask:
 
     # setup CLI commands
     if with_commands:
-        app.cli.add_command(populate_command)
+        app.cli.add_command(user_cli)
+
+    # setup debug toolbar
+    app.config["DEBUG_TB_PANELS"] = ["flask_mongoengine.panels.MongoDebugPanel"]
+    toolbar = DebugToolbarExtension()
+    toolbar.init_app(app)
 
     return app
 
