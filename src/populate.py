@@ -1,7 +1,5 @@
-from commands import user_cli
 from typing import Generator, Iterable
 
-import click
 from omdb_fixtures_loader import loader
 from pymongo import InsertOne, MongoClient
 
@@ -9,6 +7,11 @@ import settings
 
 client = MongoClient(host=settings.MONGODB_HOST, port=settings.MONGODB_PORT)
 coll = client[settings.MONGODB_DB][settings.MONGODB_COLL]
+
+
+def reset():
+    print("dropping collection {}".format(coll.name))
+    coll.drop()
 
 
 def do_search(
@@ -52,45 +55,3 @@ def save_to_db(hits: Iterable[dict]) -> int:
         counter += res.inserted_count
 
     return counter
-
-
-@user_cli.command("populate")
-@click.option(
-    "-k", "--apikey", "api_key", required=True, prompt=True, help="OMDB api key"
-)
-@click.option(
-    "-s",
-    "--search",
-    default="starwars",
-    required=False,
-    help="Text to search in OMDB search request",
-)
-@click.option(
-    "-t",
-    "--type",
-    "media_type",
-    type=click.Choice(["movie", "episode", "series"], case_sensitive=False),
-    required=False,
-    help="Type of media to search",
-)
-@click.option("-r", "--reset", is_flag=True, help="Reset database before populating")
-def populate(api_key: str, search: str, media_type: str, reset: bool) -> None:
-    """Populate database with data fetched from the OMDB API
-
-    Arguments:
-        api_key {str} -- API key
-        search {str} -- the text to search
-        media_type {str} -- type of media
-        reset {bool} -- reset database before populate (drop mongodb collection)
-
-    Returns:
-        None -- [description]
-    """
-    if reset:
-        print("dropping collection {}".format(coll.name))
-        coll.drop()
-
-    count = save_to_db(
-        hits=do_search(api_key=api_key, search=search, media_type=media_type)
-    )
-    print("{} items saved to database".format(count))

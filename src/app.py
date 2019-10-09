@@ -1,4 +1,4 @@
-from commands import user_cli
+import commands
 
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
@@ -22,7 +22,7 @@ def create_app(with_commands: bool = False, **config_overrides: dict) -> Flask:
 
     # setup CLI commands
     if with_commands:
-        app.cli.add_command(user_cli)
+        app.cli.add_command(commands.dev_cli)
 
     # setup debug toolbar
     app.config["DEBUG_TB_PANELS"] = ["flask_mongoengine.panels.MongoDebugPanel"]
