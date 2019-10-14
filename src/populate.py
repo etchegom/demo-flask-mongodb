@@ -9,7 +9,7 @@ client = MongoClient(host=settings.MONGODB_HOST, port=settings.MONGODB_PORT)
 coll = client[settings.MONGODB_DB][settings.MONGODB_COLL]
 
 
-def reset():
+def reset() -> None:
     print("dropping collection {}".format(coll.name))
     coll.drop()
 
