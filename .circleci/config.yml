@@ -4,9 +4,13 @@ jobs:
   check:
     docker:
       - image: circleci/python:3.7.3-stretch
+      - image: circleci/mongo:4.2-bionic-ram
 
     steps:
       - checkout
+
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "tox.ini" }}
 
       - run:
           name: Install tox
@@ -20,6 +24,34 @@ jobs:
           command: |
             . venv/bin/activate
             tox -e flake8,mypy
+
+      - run:
+          name: Install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.6.1
+
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:27017 -timeout 1m
+
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            tox -e py37
+
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "tox.ini" }}
+          paths:
+            - ".tox"
+
+      - store_artifacts:
+          path: test-reports/
+          destination: tr1
+
+      - store_test_results:
+          path: test-reports/
 
 workflows:
   check-code:

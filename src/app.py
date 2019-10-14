@@ -1,10 +1,10 @@
 import click
 from flask import Flask
 from flask.cli import AppGroup
-from flask_debugtoolbar import DebugToolbarExtension
 
 import populate
 from apis import blueprint
+from flask_debugtoolbar import DebugToolbarExtension
 from models import db
 
 dev_cli = AppGroup("dev", help="Dev")
