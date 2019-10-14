@@ -1,5 +1,7 @@
 import os
 
+SECRET_KEY = "my secret key"
+
 MONGODB_HOST = os.getenv("MONGODB_HOST", "localhost")
 MONGODB_PORT = int(os.getenv("MONGODB_PORT", "27017"))
 MONGODB_DB = os.getenv("MONGODB_DB", "demo")
