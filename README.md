@@ -10,7 +10,7 @@ docker-compose up -d --build
 - Populate with some data
 (you need an [OMDB api key](https://www.omdbapi.com/apikey.aspx))
 ``` 
-docker-compose run --rm app flask dev populate --reset --apikey=<your_api_key> --search=starwars --type=movie
+docker-compose run --rm app flask dev populate --reset --apikey=<your_api_key> --search="star wars" --type=movie
 ``` 
 
 - Tell me the existing routes

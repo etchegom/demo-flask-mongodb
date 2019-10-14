@@ -1,12 +1,17 @@
+import logging
 from typing import Generator, Iterable
 
 from omdb_fixtures_loader import loader
+from omdb_fixtures_loader.loader import LoaderException
 from pymongo import InsertOne, MongoClient
 
 import settings
 
 client = MongoClient(host=settings.MONGODB_HOST, port=settings.MONGODB_PORT)
 coll = client[settings.MONGODB_DB][settings.MONGODB_COLL]
+
+
+logger = logging.getLogger(__name__)
 
 
 def reset() -> None:
@@ -27,10 +32,14 @@ def do_search(
     Returns:
         Generator[dict, None, None] -- the search hits
     """
-    for hit in loader.search_and_fetch(
-        api_key=api_key, search=search, media_type=media_type
-    ):
-        yield hit
+
+    try:
+        for hit in loader.search_and_fetch(
+            api_key=api_key, search=search, media_type=media_type
+        ):
+            yield hit
+    except LoaderException as e:
+        logger.error(str(e))
 
 
 def save_to_db(hits: Iterable[dict]) -> int:
