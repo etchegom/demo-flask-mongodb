@@ -1,11 +1,15 @@
+import logging
+
 import click
 from flask import Flask
 from flask.cli import AppGroup
+from flask_admin import Admin
+from flask_debugtoolbar import DebugToolbarExtension
 
 import populate
+from admin import MovieDocumentView
 from apis import blueprint
-from flask_debugtoolbar import DebugToolbarExtension
-from models import db
+from models import MovieDocument, db
 
 dev_cli = AppGroup("dev", help="Dev")
 
@@ -60,12 +64,22 @@ def create_app(**config_overrides: dict) -> Flask:
 
     app = Flask(__name__)
 
+    # setup logging
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s : %(message)s"
+    )
+
     # setup app config
     app.config.from_object("settings")
     app.config.update(config_overrides)
 
     # setup database
     db.init_app(app)
+
+    # setup admin dashboard
+    app.config["FLASK_ADMIN_SWATCH"] = "flatly"
+    admin = Admin(app, name="Admin", template_mode="bootstrap3")
+    admin.add_view(MovieDocumentView(MovieDocument))
 
     # setup blueprints
     app.register_blueprint(blueprint)
