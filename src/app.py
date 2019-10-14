@@ -3,12 +3,12 @@ import logging
 import click
 from flask import Flask
 from flask.cli import AppGroup
+from flask_admin import Admin
+from flask_debugtoolbar import DebugToolbarExtension
 
 import populate
 from admin import MovieDocumentView
 from apis import blueprint
-from flask_admin import Admin
-from flask_debugtoolbar import DebugToolbarExtension
 from models import MovieDocument, db
 
 dev_cli = AppGroup("dev", help="Dev")
@@ -77,7 +77,7 @@ def create_app(**config_overrides: dict) -> Flask:
     db.init_app(app)
 
     # setup admin dashboard
-    app.config["FLASK_ADMIN_SWATCH"] = "cerulean"
+    app.config["FLASK_ADMIN_SWATCH"] = "flatly"
     admin = Admin(app, name="Admin", template_mode="bootstrap3")
     admin.add_view(MovieDocumentView(MovieDocument))
 
