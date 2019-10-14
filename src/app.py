@@ -1,10 +1,11 @@
 import click
 from flask import Flask
 from flask.cli import AppGroup
+from flask_debugtoolbar import DebugToolbarExtension
 
 import populate
 from apis import blueprint
-from flask_debugtoolbar import DebugToolbarExtension
+from flask_admin import Admin
 from models import db
 
 dev_cli = AppGroup("dev", help="Dev")
@@ -66,6 +67,11 @@ def create_app(**config_overrides: dict) -> Flask:
 
     # setup database
     db.init_app(app)
+
+    # setup admin dashboard
+    app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+    admin = Admin(app, name='microblog', template_mode='bootstrap3')
+    # admin.add_view()
 
     # setup blueprints
     app.register_blueprint(blueprint)
