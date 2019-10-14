@@ -8,6 +8,9 @@ jobs:
     steps:
       - checkout
 
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "tox.ini" }}
+
       - run:
           name: Install tox
           command: |
@@ -20,6 +23,11 @@ jobs:
           command: |
             . venv/bin/activate
             tox -e flake8,mypy
+
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "tox.ini" }}
+          paths:
+            - ".tox"
 
 workflows:
   check-code:
