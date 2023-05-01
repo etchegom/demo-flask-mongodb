@@ -1,5 +1,5 @@
 factory-boy==2.12.0
-Flask==1.0.3
+Flask==2.3.2
 Flask-Admin==1.5.3
 Flask-DebugToolbar==0.10.1
 flask-mongoengine==0.9.5
